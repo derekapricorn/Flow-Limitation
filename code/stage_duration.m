@@ -66,8 +66,27 @@ for ii = 1:length(match)
         t_event(ii,2) = t_event(ii,1)+duration(match(ii));
     end
 end
+
+%find the intervals for NOT IN USE
+niu = find(strcmp(event,'NOT IN USE')); 
+t_niu_event = zeros(length(niu),2);
+for ii = 1:length(niu)
+    t_niu_event(ii,1) = (datenum(start_time{niu(ii)})-datenum(t0))*24*60*60;
+    if duration(niu(ii))~=0
+        t_niu_event(ii,2) = t_niu_event(ii,1)+duration(niu(ii));
+    end
+end
+
+%find the overlapping times between NREM2 and NOT IN USE
+t_intersec_event = intersec_interval(t_event,t_niu_event);
+
+
 t_event = t_event((t_event(:,2)~=0),:);
-num_int = size(t_event);
+num_entries = size(t_event);
 tot_time = sum(t_event(:,2)-t_event(:,1));
 
-sprintf('total duration of nrem 2 is %d, and %d entries',tot_time, num_int(1))
+
+sprintf('total duration of nrem 2 is %d, and %d entries',tot_time, num_entries(1))
+
+
+save('event_time.mat','t_event','t_niu_event','t_intersec_event','num_entries');

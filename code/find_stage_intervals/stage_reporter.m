@@ -54,7 +54,7 @@ elseif ss == 4
 elseif ss == 5
      match = find(strcmp(event,'Wake')); 
 end
-
+%
 %t_event is [n,2] matrix containing start and end ref time for each
 %qualified stage
 t_event = zeros(length(match),2);

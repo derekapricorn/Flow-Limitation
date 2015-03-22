@@ -14,7 +14,7 @@ for jj = 1:length(fname)
         %check if the breath under analysis is in the stage of interest
         flag = any(temp > t_event(:,1) & temp < t_event(:,2));
         if flag 
-            if strcmp(type_cell{kk},'Flattened')
+            if strcmp(type_cell{kk},'Flattened')||strcmp(type_cell{kk},'Low signal')
                 flat_count = flat_count + 1;    
 %             elseif strcmp(type_cell{kk},'Intermediate')
 %                 int_count = int_count + 1;

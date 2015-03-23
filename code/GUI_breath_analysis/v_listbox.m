@@ -7,10 +7,9 @@ elseif strcmp(type,'Normal')
     v = 2;
 elseif strcmp(type,'Intermediate')
     v = 3;
-else
+elseif strcmp(type,'Flattened')
     v = 4;
-end
-
-
+else
+    v = 5; %this is low signal type
 end
 

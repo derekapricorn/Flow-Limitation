@@ -5,9 +5,8 @@ function [] = stage_reporter()
 %ss = 1:NREM1
 %ss = 2:NREM2
 %ss = 3:NREM3
-%ss = 4:NREM4
+%ss = 4:REM
 %ss = 5:Wake
-%ss = 6:not in use
 %it prompts user to select the event file of interest, and then input the 
 %desired stage. the apnea hypopnea stages are automatically calculated as
 %well.
@@ -15,6 +14,19 @@ function [] = stage_reporter()
 %and t_intersec_event: start and end of breaths in the A/H stages inside
 %the speficied stages.
 
+fname = dir('*.mat');
+%if event_time.mat already exists, do nothing but return
+if ~isempty(fname)
+    count = 1;
+    while count <= length(fname)
+        if strcmp(fname(count).name,'event_time.mat')
+            return
+        end
+        count = count + 1;
+    end
+end
+
+%otherwise, genereate event_time.mat
 filedir = uigetdir;
 cd(filedir);
 filetoRead = uigetfile('*.txt'); %get the filename
@@ -50,9 +62,9 @@ elseif ss == 2
 elseif ss == 3
      match = find(strcmp(event,'Stage 3'));
 elseif ss == 4
-     match = find(strcmp(event,'Stage 4'));
+     match = find(strcmp(event,'REM'));
 elseif ss == 5
-     match = find(strcmp(event,'Low signal')); 
+     match = find(strcmp(event,'Wake')); 
 end
 %
 %t_event is [n,2] matrix containing start and end ref time for each
@@ -84,24 +96,6 @@ for ii = 1:length(niu)
 end
 
 t_intersec_event = intersec_interval(t_event,t_niu_event);
-%load and analyze the related annotations. the files to be read are in .mat
-%format. have to make sure the data files are the only .mat files
-            
-%           error checking
-            fname = dir('*.mat');
-            %check if there is any existing file with the same name
-            for count = 1:length(fname)
-                if strcmp(fname(count).name,'event_time.mat')
-                    delete('event_time.mat')
-                end
-            end
-    
-fname = dir('*.mat');
-[tot_count,stage_count,flat_count,norm_count] = find_count(fname,t_event); 
-[~,niu_count,niu_flat_count,niu_norm_count] = find_count(fname,t_intersec_event);
-
-sprintf('Among the %d breaths analyzed, %d are in stage %d, %d are flattened, %d are normal',tot_count,stage_count,ss,flat_count,norm_count)
-sprintf('Among the %d in apnea/hypopnea within that stage, %d are flattened and %d are normal',niu_count,niu_flat_count,niu_norm_count)
 
 %add the total stage times to file. 
 save('event_time.mat','t_event','t_niu_event','t_intersec_event');

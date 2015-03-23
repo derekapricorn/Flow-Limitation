@@ -20,6 +20,7 @@ if ~isempty(fname)
     count = 1;
     while count <= length(fname)
         if strcmp(fname(count).name,'event_time.mat')
+            sprintf('event_time.mat already exists')
             return
         end
         count = count + 1;

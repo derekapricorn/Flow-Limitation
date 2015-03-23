@@ -6,7 +6,9 @@ function [ t_out ] = intersec_interval( t_ref,t_niu )
 
 temp = [];
 for ii = 1:length(t_niu)
-    if in_or_out(t_ref, t_niu(ii,:))
+    if in_or_out(t_ref, t_niu(ii,:))%in_or_out determines if the niu event 
+        %is within the NREM2 or not. If half of hte niu is within, then 
+        %it is considered an event within NREM2
         temp = [temp;t_niu(ii,:)];
     end
 end

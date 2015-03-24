@@ -1,33 +1,42 @@
-function [ ref, ylim ] = find_pk_ref()
-%This function finds the top 3% of the peak inspiratory signal from the
-%designated subject as the reference for later annotation.
-filedir = uigetdir;
+function [ ref, ylim ] = find_pk_ref(filedir)
+%This function finds the top miu+2std (3%) of the peak inspiratory signal 
+%from the designated subject as the reference for later annotation. and 
+%miu+std (84%) is used for the reference line
+
+%filedir = uigetdir;
 cd(filedir);
 fname = dir('*.mat');
 maximas = [];
 %find all the maximas throughout all the study
 for jj = 1:length(fname)
-    load(fname(jj).name);
-     for kk = 1:length(p_cell)
-       maximas = [maximas;max(p_cell{kk})];
-     end
+    if ~strcmp(fname(jj).name,'event_time.mat')
+        load(fname(jj).name);
+        for kk = 1:length(p_cell)
+          maximas = [maximas;max(p_cell{kk})];
+        end
+    end
 end
-%find the histogram 
-histfit(maximas, 100);
-[mu,s,~,~] = normfit(maximas);
-%find the ref to be miu+2std;
-ylim = mu+2*s;
-ref = mu+s;
-% binranges = linspace(min(maximas),max(maximas),100);%find 100 evenly divided bins within the range
-% [bincounts,~] = histc(maximas,binranges);
-% possible_range = bincounts((binranges>mu+s));
-% temp = find(possible_range == max(possible_range));
-% temp2 = find(binranges>mu+s);
-% ref = temp2(1)+binranges(temp(end));
-
+%if not normal distribution, transform the distribution to be normal and
+%find the corresponding ref and ylim
+if adtest(maximas)
+    s = 1;
+    rank = rank_transform(maximas);
+    %regress through the error epsilon
+    ref = NaN;
+    ylim = NaN;
+    e = 0.0001;
+    while isnan(ref*ylim)
+        ref = mean(maximas(find(abs(rank-s)<e)));%ref to be mu+1std
+        ylim = mean(maximas(find(abs(rank-2*s)<e)));%ylim to be mu+2std
+        e = e * 10;
+    end
+else
+    [mu,s,~,~] = normfit(maximas,100);
+    ref = mu+s;
+    ylim = mu+2*s;
 end
 
-
+end
 %%
 % implement this filtering script so that any peak that's lower than 10% of
 % the reference peak will be denied

@@ -1,4 +1,4 @@
-function [tot_count,stage_count,flat_count,norm_count] = find_count( fname, t_event )
+function [tot_count,stage_count,flat_count,norm_count,low_signal_count] = find_count( fname, t_event )
 %the function accepts an array of filenames of files under the same format;
 %and outputs the total breath numbers, the numbers in specified stage and
 %the number of flattened breaths within that stage
@@ -6,6 +6,7 @@ function [tot_count,stage_count,flat_count,norm_count] = find_count( fname, t_ev
 tot_count = 0;
 stage_count = 0;
 flat_count = 0;
+low_signal_count = 0;
 norm_count = 0;
 for jj = 1:length(fname)
     if ~strcmp(fname(jj).name,'event_time.mat')
@@ -15,12 +16,12 @@ for jj = 1:length(fname)
             %check if the breath under analysis is in the stage of interest
             flag = any(temp > t_event(:,1) & temp < t_event(:,2));
             if flag 
-                if strcmp(type_cell{kk},'Flattened')||strcmp(type_cell{kk},'Low signal')
+                if strcmp(type_cell{kk},'Flattened')
                     flat_count = flat_count + 1;    
-    %             elseif strcmp(type_cell{kk},'Intermediate')
-    %                 int_count = int_count + 1;
                 elseif strcmp(type_cell{kk},'Normal')
                     norm_count = norm_count + 1;
+                elseif strcmp(type_cell{kk},'Low signal')
+                    low_signal_count = low_signal_count + 1;
                 elseif strcmp(type_cell{kk},'Unknown') %in case of Unknown, neglect the breath
 
                 %in newer version e.g. ss26 the name has to be changed

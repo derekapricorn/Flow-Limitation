@@ -13,7 +13,8 @@ function [] = stage_reporter()
 %Output is t_event: start and end of breaths in the specified stages
 %and t_intersec_event: start and end of breaths in the A/H stages inside
 %the speficied stages.
-
+filedir = uigetdir;
+cd(filedir);
 fname = dir('*.mat');
 %if event_time.mat already exists, do nothing but return
 if ~isempty(fname)
@@ -28,8 +29,6 @@ if ~isempty(fname)
 end
 
 %otherwise, genereate event_time.mat
-filedir = uigetdir;
-cd(filedir);
 filetoRead = uigetfile('*.txt'); %get the filename
 %get range and sleep stage
 % st = input('Start Time:');

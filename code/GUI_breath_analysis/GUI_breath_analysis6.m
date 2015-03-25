@@ -152,6 +152,7 @@ function pushbutton1_Callback(hObject, eventdata, handles)
        disp('User pressed cancel')
     else
        %initial setup
+       cd(pathname);
        S = load(filename);
        handles.filename = filename;
        %this counts which breath the pointer is on
@@ -212,7 +213,7 @@ function pushbutton1_Callback(hObject, eventdata, handles)
        
        baseline = refline([0,handles.y_ref]);
        set(baseline,'Color','b')
-%        axis tight
+%      axis tight
        %update the counters 
        handles.c_e = c_e;
        handles.c_s = 1;

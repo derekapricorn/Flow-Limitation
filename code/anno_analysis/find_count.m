@@ -25,7 +25,7 @@ for jj = 1:length(fname)
                 elseif strcmp(type_cell{kk},'Unknown') %in case of Unknown, neglect the breath
 
                 %in newer version e.g. ss26 the name has to be changed
-     %           elseif strcmp(type_cell{kk},'Obstructive Hypopnea w/ Arousal')
+                %elseif strcmp(type_cell{kk},'Obstructive Hypopnea w/ Arousal')
                     %
 
                     tot_count = tot_count - 1;
